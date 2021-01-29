@@ -316,17 +316,13 @@
 					// top 3
 					var tab_top_teams_progression = document.getElementsByClassName('top_team_progression');
 					var tab_top_teams_name = document.getElementsByClassName('top_team_name');
-
-					// set txt for classement
-					for (var i=0;i < tab_teams_name.length;i++)
-					{
-						tab_teams_name[i].innerHTML = Object.keys(response)[i];
-						tab_teams_progression[i].innerHTML = Object.values(response)[i]+ "%";
-					}
-
+					
 					// set txt for top 3
 					for (var i=0;i < tab_top_teams_name.length;i++)
 					{
+						if (Object.keys(response)[i] == "{{ team_name }}"){
+						    tab_teams_progression[i].innerHTML = Object.values(response)[i]+ "%";
+						}
 						tab_top_teams_progression[i].innerHTML = Object.values(response)[i] + "%";
 						tab_top_teams_name[i].innerHTML = Object.keys(response)[i];
 					}
