@@ -1,1 +1,0 @@
-import SwitchMaquette_6 from './';
