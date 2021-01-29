@@ -1,0 +1,171 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr" >
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>{% block title %}{% endblock %}</title>
+
+      <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    </head>
+
+    <body class="h-100 w-100">
+	    <div class="container-fluid">
+
+			<!-- NAVBAR  -->
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					<li class="nav-item">
+						{% if request.get_full_path == "/teams" %}
+							<a class="nav-link active" href="{% url 'teams' %}">
+						{% else %}
+							<a class="nav-link" href="{% url 'teams' %}">
+						{% endif %}
+							Vue d'équipe
+						</a>
+					</li>
+
+					{% if request.user.is_staff %}
+						<li class="nav-item">
+							{% if request.get_full_path == "/ad" %}
+								<a class="nav-link active" href="{% url 'ad' %}">
+							{% else %}
+								<a class="nav-link" href="{% url 'ad' %}">
+							{% endif %}
+								Vue Admin
+							</a>
+						</li>
+
+					{% else %}
+						<li class="nav-item">
+							{% if request.get_full_path == "/game" %}
+							<a class="nav-link active" href="{% url 'game' %}">
+							{% else %}
+								<a class="nav-link" href="{% url 'game' %}">
+							{% endif %}
+								Vue Jeu
+							</a>
+						</li>						
+					{% endif %}
+					
+				</ul>
+					<!-- Deconnexion Button trigger modal -->
+					<button class="btn btn-outline-danger" data-toggle="modal" data-target="#logoutmodal" style="width:15%; min-width: 150px; margin-left: 10px;">
+						Déconnexion
+					</button>	
+			</nav>
+			
+			<!-- END NAVBAR  -->
+
+			<!--  Main Container  -->
+	        <main role="main">
+
+				{% if messages %}
+					<div class="flex-column">
+						{% for message in messages  %}				
+							<div class="alert alert-{{ message.tags}}" role="alert">
+								{{message}}
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+
+					<div class="row">
+
+
+						{% if timer %}
+						<div class="col-3" style="padding:5%;"  >
+							
+							<div class="card">
+							  <div class="card-header">
+								<div class="card-title">Minuteur</div>
+							  </div>
+							  <div class="card-body">
+								<div class="card-text">
+								  <h2 id="sTimer"> </h2>
+								</div>
+							  </div>
+							</div>
+						  
+						</div>
+						{% endif %}
+
+						<div class="col-9" style="padding: 5%;">
+							{% block content%}{% endblock %}
+						</div>
+
+					</div>
+
+		
+			</main>
+			<!-- END Container  -->			
+	    </div>
+
+	    <!-- logoutmodal -->
+		<div class="modal fade" id="logoutmodal" tabindex="-1" role="dialog" aria-labelledby="Se déconnecter" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Se déconnecter</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <p>Êtes-vous certain de vouloir vous déconnecter?</p>
+
+				<form method="post" action="{% url 'account_logout' %}">
+				  {% csrf_token %}
+				  <button class="btn btn-danger" type="submit">Se Déconnecter</button>
+				</form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		{% block scripts %} {% endblock %}
+		
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+		<script type="text/javascript">
+
+
+		var loop_timer = setInterval(function(){
+
+		var sTimer = document.getElementById("sTimer");
+		var current_date = new Date();
+		var created_at = parseFloat('{{ created_at }}') ;
+		var timer = parseFloat('{{ timer }}') ; // get time en seconds 
+
+
+
+		var game_status = "{{ game.status }}";
+
+		//var timer_display = Number((created_at + timer - current_date.getTime()/1000)).toFixed(1);
+		var timer_display = (created_at + timer*60 - current_date.getTime()/1000);
+
+		if (game_status == "WAITING"){
+			sTimer.innerHTML = "En attente du lancement.";
+		}
+		if (game_status == "INGAME"){
+				if (timer_display<=0){				
+				window.alert("La partie est terminée.");		
+				sTimer.innerHTML = "La partie est terminée.";
+				clearInterval(loop_timer);
+			}
+			else {
+				sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);
+			}
+		}
+
+		if (game_status == "PAUSED" ) {
+			sTimer.innerHTML = "La partie est en pause.";
+		}
+		},250);
+		</script>
+	</body>
+</html>

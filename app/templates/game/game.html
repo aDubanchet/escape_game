@@ -1,0 +1,419 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" >
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>Escape Game | Vue du Jeu </title>
+
+      <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	  <link rel="shortcut icon" href="{% static 'webgl/TemplateData/favicon.ico' %}">
+
+	  {% if game.status == "INGAME" %}
+		<link rel="stylesheet" href="{% static 'webgl/TemplateData/style.css' %}">
+		<script src="{% static 'webgl/TemplateData/UnityProgress.js' %}"></script>
+		<script src="{% static 'webgl/Build/UnityLoader.js' %}"></script>	
+		<script>
+			var unityInstance = UnityLoader.instantiate("unityContainer", "{% static 'webgl/Build/Package WebGL.json' %}", {onProgress: UnityProgress});
+		</script>	
+	  {% endif %}
+	</head>
+
+    <body class="h-100 w-100">
+	    <div class="container-fluid">
+
+			<!-- NAVBAR  -->
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					<li class="nav-item">
+						{% if request.get_full_path == "/teams" %}
+							<a class="nav-link active" href="{% url 'teams' %}">
+						{% else %}
+							<a class="nav-link" href="{% url 'teams' %}">
+						{% endif %}
+							Vue d'équipe
+						</a>
+					</li>
+
+					{% if request.user.is_staff %}
+						<li class="nav-item">
+							{% if request.get_full_path == "/ad" %}
+								<a class="nav-link active" href="{% url 'ad' %}">
+							{% else %}
+								<a class="nav-link" href="{% url 'ad' %}">
+							{% endif %}
+								Vue Admin
+							</a>
+						</li>
+
+					{% else %}
+						<li class="nav-item">
+							{% if request.get_full_path == "/game" %}
+							<a class="nav-link active" href="{% url 'game' %}">
+							{% else %}
+								<a class="nav-link" href="{% url 'game' %}">
+							{% endif %}
+								Vue Jeu
+							</a>
+						</li>						
+					{% endif %}
+
+					
+				</ul>
+					<!-- Deconnexion Button trigger modal -->
+					<button class="btn btn-outline-danger" data-toggle="modal" data-target="#logoutmodal" style="width:15%; min-width: 150px; margin-left: 10px;">
+						Déconnexion
+					</button>	
+			</nav>
+			
+			<!-- END NAVBAR  -->
+
+			<!--  Main Container  -->
+	        <main role="main">
+
+				{% if messages %}
+					<div class="flex-column">
+						{% for message in messages  %}				
+							<div class="alert alert-{{ message.tags}}" role="alert">
+								{{message}}
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			<div class="title" style="padding: 20px;">
+				<h1>Hacker à l'ouvrage</h1>
+			</div>
+					
+          <div class="row">
+
+            <div class="col-8">
+
+				{% if game.status == "PAUSED" %}      			
+				<div style="padding: 5%;" >
+					<div class="header">
+						En Pause
+					</div>
+					<div class="body">
+						<p>La partie a été mise en pause par l'Administrateur. Merci de patienter.</p>
+					</div>	
+				</div>
+				{% elif game.status == "WAITING" %}
+  
+					<div class="card" style="padding: 5%;">
+						<div class="card-header">
+							En Attente
+						</div>
+						<div class="card-body">
+							<p>La partie n'a pas encore été lancée. Merci de patienter.</p>
+						</div>	
+					</div>
+  
+				{% elif game.status == "INGAME" %}
+					<div class="webgl-content">
+						<div id="unityContainer" style="width: 720px; height: 450px; padding-top:30%;"></div>
+						<div class="footer">
+						<div class="webgl-logo"></div>
+						<div class="fullscreen" onclick="unityInstance.SetFullscreen(1)">
+							<a href="{% static '/webgl/TemplateData/fullscreen.png' %}"></a>		
+						</div>
+						<div class="title">Hacker à l'ouvrage</div>
+						</div>
+					</div>		  
+				{% endif %}
+            </div>
+            <div class="col-4">
+              <div class="row" style="padding: 2%; padding-left: 5%;">
+                <h3>Equipe {{ team_name }}</h3>
+
+              </div>
+
+              <!-- Timer -->
+              <div class="row w-100" style="padding: 5%;">
+                {% if timer %}
+                  <div class="card w-100" >
+                    <div class="card-header">
+                      <div class="card-title">Minuteur</div>
+                    </div>
+                    <div class="card-body">
+                      <div class="card-text">
+                        <h2 id="ATimer"> </h2>
+                        <h2 id="sTimer"> </h2>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>  
+
+              <!-- Classement de l'équipe -->
+              <div class="row w-100" style="padding: 5%;">
+                <div class="card w-100">
+              
+                  <div class="card-header">
+                    <p class="card-title"> Votre Équipe</p>
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-bordered">
+                      <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Progression</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                            <th scope="row" >{{ team_name }}</th>
+                            <th scope="row" class="team_progression">{{ team_progression }} %</th>
+                        </tr>
+                      </tbody>
+                    </table>  
+                  </div>
+                </div>
+              </div> 
+
+              <!-- Top 3  -->
+              <div class="row w-100" style="padding: 5%;">
+                <div class="card w-100">
+              
+                  <div class="card-header">
+                    <p class="card-title"> Top 3</p>
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-bordered">
+                      <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Nom d'Equipe</th>
+                            <th scope="col">Progression</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for team in teams  %}
+                              <tr>
+                                  <th scope="row" class="top_team_name">{{ team.name }}</th>
+                                  <th scope="row" class="top_team_progression">{{ team.progression }} % </th>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                    </table>  
+                  </div>
+                </div>
+              </div> 
+            </div>
+          </div>
+ 
+
+		
+			</main>
+			<!-- END Container  -->			
+	    </div>
+
+	    <!-- logoutmodal -->
+		<div class="modal fade" id="logoutmodal" tabindex="-1" role="dialog" aria-labelledby="Se déconnecter" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Se déconnecter</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <p>Êtes-vous certain de vouloir vous déconnecter?</p>
+
+				<form method="post" action="{% url 'account_logout' %}">
+				  {% csrf_token %}
+				  <button class="btn btn-danger" type="submit">Se Déconnecter</button>
+				</form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		<!-- AJAX PROGRESSION FORM -->	
+		<form method="POST" action="{% url 'ajax_update_progression' %}" type="hidden" id="progression-form">
+			{% csrf_token %}
+
+			<input type="hidden" name="post_progression" id="post_progression">
+			<input type="hidden" name="post_team_name" id="post_team_name" value="{{ team_name }}">
+			<input type="hidden" value="POST">
+		</form>		
+		
+		{% block scripts %} {% endblock %}
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>	
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		<script type="text/javascript">
+
+		function getCookie(name) {
+			if (document.cookie && document.cookie != '') {
+				var cookies = document.cookie.split(';');
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = jQuery.trim(cookies[i]);
+					if (cookie.substring(0, name.length + 1) == (name + '=')) {
+						return decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+		}
+		// Function demandant à Unity la progression 
+		function getFloatFromUnity() {
+             unityInstance.SendMessage("WebGLBridge", "GetAvancement");
+        }
+		// Function recevant la progression 
+		function receiveMessageFromUnity(number) {
+			post_progression(number); 
+		}
+
+		// Envoi de la progression au serveur 
+		function post_progression(progression) {
+			
+			var input_progression = document.getElementById('post_progression')
+			input_progression.value = progression;
+
+			var form_progression = document.getElementById("progression-form");
+
+			$.ajax({
+				url : "ajax/update_progression/", // the endpoint
+				type : "POST", // http method
+				headers:{
+					"X-CSRFToken" : getCookie('csrftoken')
+				},
+				data : { 
+					post_progression: progression,
+					post_team_name: "{{ team_name }}"					
+				}, // data sent with the post request
+
+				// handle a successful response
+				success : function(json) {
+					$('#post_progression').val(''); // remove the value from the input
+					console.log(json); // log the returned json to the console
+					console.log("success"); // another sanity check
+				},
+
+				// handle a non-successful response
+				error : function(xhr,errmsg,err) {
+					$('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+						" <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+					console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+				}
+			});
+			
+		};
+
+		// AJAX to get teams data 
+		function get_teams(){
+			console.log("Will get Team");
+			$.ajax({
+				url : '/ajax/get_teams/', // endpoint 
+				type : 'GET',
+				dataType : 'json',
+				success: function(response){
+					// classement 
+					var tab_teams_name = document.getElementsByClassName('team_name');
+					var tab_teams_progression = document.getElementsByClassName('team_progression')
+					
+					// top 3
+					var tab_top_teams_progression = document.getElementsByClassName('top_team_progression');
+					var tab_top_teams_name = document.getElementsByClassName('top_team_name');
+
+					// set txt for classement
+					for (var i=0;i < tab_teams_name.length;i++)
+					{
+						tab_teams_name[i].innerHTML = Object.keys(response)[i];
+						tab_teams_progression[i].innerHTML = Object.values(response)[i]+ "%";
+					}
+
+					// set txt for top 3
+					for (var i=0;i < tab_top_teams_name.length;i++)
+					{
+						tab_top_teams_progression[i].innerHTML = Object.values(response)[i] + "%";
+						tab_top_teams_name[i].innerHTML = Object.keys(response)[i];
+					}
+				},
+				error: function(hr,errmsg,err){
+					console.log(hr);
+					console.log(errmsg);
+					console.log(err);
+				}
+
+			});
+		}
+
+			
+			function get_game_status(){
+			// AJAX to get the status of the game 
+			$.ajax({
+				url : '/ajax/get_game_status/', // endpoint 
+				type : 'GET',
+				dataType : 'json',
+				success: function(response){
+
+					if (response['status'] == "INGAME"){
+						document.location.reload()
+					}
+				}
+			});
+		}
+
+
+		$(document).ready(function(){
+		// AJAX for posting progression 
+
+			var loop_timer = setInterval(function(){
+
+				var sTimer = document.getElementById("sTimer");
+				var current_date = new Date();
+				var created_at = parseFloat('{{ created_at }}') ;
+				var timer = parseFloat('{{ timer }}') ; // get time en seconds 
+
+
+
+				var game_status = "{{ game.status }}";
+
+				//var timer_display = Number((created_at + timer - current_date.getTime()/1000)).toFixed(1);
+				var timer_display = (created_at + timer*60 - current_date.getTime()/1000);
+
+				if (game_status == "WAITING"){
+					sTimer.innerHTML = "En attente du lancement.";
+				}
+				if (game_status == "INGAME"){
+						if (timer_display<=0){				
+						window.alert("La partie est terminée.");		
+						sTimer.innerHTML = "La partie est terminée.";
+						clearInterval(loop_timer);
+					}
+					else {
+						sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);
+					}
+				}
+
+				if (game_status == "PAUSED" ) {
+					sTimer.innerHTML = "La partie est en pause.";
+				}
+			},250);
+
+			// it update teams each 5 seconds
+			var update_teams = setInterval(function(){
+				get_teams();
+			},5000);
+
+			// each 30 secs it ask unity for the progression
+			var post_progression = setInterval(function(){
+				getFloatFromUnity();
+			},15000);
+
+
+			var game_status = "{{ game.status}}";
+			if (game_status != "INGAME"){
+				var loop_status = setInterval(function(){
+				get_game_status()
+
+			;},5000);
+
+			}
+		});
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        restart: always
+        networks:
+            - default
+    app:
+
+        build:
+            context: .
+        expose:
+            - 8000
+        volumes:
+            - static_data:/vol/static
+        command: sh -c "
+                    sleep 7 &&
+                    python manage.py makemigrations &&
+                    python manage.py migrate &&
+                    python manage.py collectstatic --noinput &&
+                    gunicorn escape_game.wsgi:application --bind 0.0.0.0:8000"
+        environment:
+            - DEBUG=0
+            - SECRET_KEY= sampleSecretKey19122
+        depends_on:
+            - db
+        networks:
+            - default
+    proxy:
+        build:
+            context: ./proxy
+        volumes:
+            - static_data:/vol/static
+        ports:
+           - 80:80
+        depends_on:
+            - app
+        networks:
+            - default
+volumes:
+    static_data:
+
+networks:
+    default:

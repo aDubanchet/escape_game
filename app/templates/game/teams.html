@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Escape Game | Vue d'Equipes {% endblock %}
+
+{% block content %}
+    <div class="card">
+
+      <div class="card-header">
+        <h1>Escape Game | Vue d'équipe</h1>
+      </div>
+
+      <div class="card-body">
+        {% if teams %}
+        <!-- ADMIN : List of Teams -->
+        <table class="table table-bordered">
+          <thead class="thead-light">
+              <tr>
+                <th scope="col">Nom d'Equipe</th>
+                <th scope="col">Progression</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for team in teams  %}
+                  <tr>
+                      <th scope="row">{{ team.name }}</th>
+                      <th scope="row">{{ team.progression }} %</th>
+
+                  </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+
+        {% else %}
+            <p>Aucune équipe a été ajoutée pour l'instant.</p>
+        {% endif %}
+
+      <div>
+
+    </div>
+{% endblock %}
+
+
+
+

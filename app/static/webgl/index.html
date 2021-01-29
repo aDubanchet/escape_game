@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
+    
+    <title>Unity WebGL Player | Hacker à l'ouvrage</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL.json", {onProgress: UnityProgress});
+    </script>
+  </head>
+  <body>
+    <div class="webgl-content">
+      <div id="unityContainer" style="width: 960px; height: 600px"></div>
+      <div class="footer">
+        <div class="webgl-logo"></div>
+        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+        <div class="title">Hacker à l'ouvrage</div>
+        <button onclick="getFloatFromUnity()">Get int from Unity</button>
+        <h4 id = "message">Int value</h4>
+        <script>
+          function getFloatFromUnity() {
+             unityInstance.SendMessage("WebGLBridge", "GetAvancement");
+          }
+
+          function receiveMessageFromUnity(number) {
+            window.alert("The number is: " + number);
+
+              const lblMessage = document.getElementById("message");
+              lblMessage.innerText = number;
+          }
+       </script>
+      </div>
+    </div>
+  </body>
+</html>

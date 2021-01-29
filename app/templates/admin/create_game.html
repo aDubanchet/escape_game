@@ -1,0 +1,21 @@
+
+{% extends 'base.html' %}
+{% block title %}Escape Game | Createur de Partie {% endblock %}
+
+{% block content %}
+<div>
+  <h1> Escape Game | Createur de Partie</h1>
+</div>
+  
+<div>
+  <form method="post">
+    {% csrf_token %}
+
+    {{ game_creation_form.as_p }}
+
+    <button class="btn btn-success justify-content-center" type="submit">Créer la Partie</button>
+  </form>
+</div>
+
+
+{% endblock %}
