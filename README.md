@@ -22,9 +22,10 @@ Création du serveur via AWS
 	Remplacer * de la variable ALLOWED_HOST du fichier /app/escape_game/settings.py par l’ip du serveur. 
 * Mise en place du serveur :
 	Construire et lancer l’image :
-	docker-compose up 
+	
 	docker-compose build 
-
+	docker-compose up 
+	
 	Créer un admin : 
 	docker-compose exec app python manage.py createsuperuser 
 
@@ -50,7 +51,9 @@ Docker-compose exec app python manage.py createsuperuser
 Déposer la version compilée du jeu dans le dossier : 
 escape_game/app/static/webgl/ 
 
-Puis Faire la commande : 
+Puis faire les commandes : 
+docker-compose build 
+docker-compose up 
 docker-compose exec app python manage.py collectstatic —noinput
 
 ## Vérifier la progression  :
