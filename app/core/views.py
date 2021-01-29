@@ -324,7 +324,7 @@ class StartGameView(View):
 
 def get_teams(request):
     #GET request : pour récupérer les informations des équipes 
-    teams = Team.objects.all()
+    teams = Team.objects.all().order_by('-progression') # on tri dans l'ordre décroissant
     teams_progression = {}
     for team in teams:
         data = {
