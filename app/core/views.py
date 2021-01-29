@@ -346,6 +346,11 @@ def post_progression(request):
         post_progression = request.POST.get('post_progression')
         post_team_name = request.POST.get('post_team_name')
 
+        if int(post_progression) == 0 :
+            return HttpResponse(
+            json.dumps(response_data),
+            content_type = "application/json")      
+        
         #No need test user security
         team = get_object_or_404(Team,name=str(post_team_name))
         team.progression = post_progression
