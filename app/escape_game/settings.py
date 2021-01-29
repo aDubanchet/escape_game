@@ -148,16 +148,15 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
-
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    'escape_game/static/',
-]
-
 ACCOUNT_LOGOUT_REDIRECT_URL = 'account_login'
 
 LOGOUT_REDIRECT_URL = "account_login"
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = '/vol/static/'
+
+# Add these new lines
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
