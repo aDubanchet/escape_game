@@ -154,7 +154,7 @@ class ChooseTeamName(View):
             team.team_name_updated_by = 'player'
             team.save()
 
-            return redirect('teams')
+            return redirect('game')
             
 class IncrementProgressionView(View):
     def post(self,request):
