@@ -279,38 +279,48 @@
 
 
 
+		$(document).ready(function(){
+		// AJAX for posting progression 
+
 			var loop_timer = setInterval(function(){
 
-    var sTimer = document.getElementById("sTimer");
-    var current_date = new Date();
-    var created_at = parseFloat('{{ created_at }}') ;
-    var timer = parseFloat('{{ timer }}') ; // get time en seconds 
+				var sTimer = document.getElementById("sTimer");
+				var current_date = new Date();
+				var created_at = parseFloat('{{ created_at }}') ;
+				var timer = parseFloat('{{ timer }}') ; // get time en seconds 
 
 
 
-    var game_status = "{{ game.status }}";
+				var game_status = "{{ game.status }}";
 
-    //var timer_display = Number((created_at + timer - current_date.getTime()/1000)).toFixed(1);
-    var timer_display = (created_at + timer*60 - current_date.getTime()/1000);
+				//var timer_display = Number((created_at + timer - current_date.getTime()/1000)).toFixed(1);
+				var timer_display = (created_at + timer*60 - current_date.getTime()/1000);
 
-    if (game_status == "WAITING"){
-      sTimer.innerHTML = "En attente du lancement.";
-    }
-    if (game_status == "INGAME"){
-        if (timer_display<=0){				
-        window.alert("La partie est terminée.");		
-        sTimer.innerHTML = "La partie est terminée.";
-        clearInterval(loop_timer);
-      }
-      else {
-        sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);
-      }
-    }
+				if (game_status == "WAITING"){
+					sTimer.innerHTML = "En attente du lancement.";
+				}
+				if (game_status == "INGAME"){
+						if (timer_display<=0){				
+						window.alert("La partie est terminée.");		
+						sTimer.innerHTML = "La partie est terminée.";
+						clearInterval(loop_timer);
+					}
+					else {
+						if (Math.floor(timer_display%60) < 10){
+							sTimer.innerHTML = Math.floor(timer_display/60) + ':0' + Math.floor(timer_display%60);
+						}
+						else {
+							sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);	
+						}
+						
+					}
+				}
 
-if (game_status == "PAUSED" ) {
-  sTimer.innerHTML = "La partie est en pause.";
-}
-},250);
+				if (game_status == "PAUSED" ) {
+					sTimer.innerHTML = "La partie est en pause.";
+				}
+			},250);
+		})
 
 		</script>
 	</body>
