@@ -384,7 +384,13 @@
 						clearInterval(loop_timer);
 					}
 					else {
-						sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);
+						if (Math.floor(timer_display%60) < 10){
+							sTimer.innerHTML = Math.floor(timer_display/60) + ': 0' + Math.floor(timer_display%60);
+						}
+						else {
+							sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);	
+						}
+						
 					}
 				}
 
