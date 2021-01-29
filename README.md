@@ -52,3 +52,9 @@ escape_game/app/static/webgl/
 
 Puis Faire la commande : 
 docker-compose exec app python manage.py collectstatic —noinput
+
+## Vérifier la progression  :
+Ouvrir la console web du navigateur : 
+post_progression(80);
+
+
