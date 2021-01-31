@@ -6,3 +6,4 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN mkdir -p /vol/static
 RUN chmod 775 /vol/static
+

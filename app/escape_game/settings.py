@@ -156,6 +156,10 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/vol/static/'
 
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = '/vol/media/'
+
 # Add these new lines
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
