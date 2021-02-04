@@ -13,21 +13,37 @@
 	  {% if game.status == "INGAME" %}
 		<link rel="stylesheet" href="{% static 'webgl/TemplateData/style.css' %}">
 		<script src="{% static 'webgl/TemplateData/UnityProgress.js' %}"></script>
-		<script src="{% static 'webgl/Build/UnityLoader.js' %}"></script>	
+		<script src="{% static 'webgl/Build/UnityLoader.js' %}"></script>
 		<script>
 			var unityInstance = UnityLoader.instantiate("unityContainer", "{% static 'webgl/Build/WebGL.json' %}", {onProgress: UnityProgress});
-		</script>	
+		</script>
+
+        <style media="screen">
+        /* Téléchargement de la Police de caractère  */
+        @font-face {
+          font-family: "Bitstream Vera Serif Bold";
+          src: url("/static/styles/libs/font-awesome/fonts/fontawesome-webfont.fdf491ce5ff5.woff");
+        }
+
+        /* Mise en place de la police dans tout le document  */
+        * {
+            font-family: "Bitstream Vera Serif Bold", serif;
+        }
+
+
+        </style>
 	  {% endif %}
 	</head>
 
     <body class="h-100 w-100">
 	    <div class="container-fluid">
 
-			<!-- NAVBAR  -->
+			<!-- Barre de naviguation  -->
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
 				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 					<li class="nav-item">
 						{% if request.get_full_path == "/teams" %}
+                        <!-- URL pour accéder aux équipes -->
 							<a class="nav-link active" href="{% url 'teams' %}">
 						{% else %}
 							<a class="nav-link" href="{% url 'teams' %}">
@@ -38,6 +54,7 @@
 
 					{% if request.user.is_staff %}
 						<li class="nav-item">
+                            <!-- partie admin -->
 							{% if request.get_full_path == "/ad" %}
 								<a class="nav-link active" href="{% url 'ad' %}">
 							{% else %}
@@ -49,6 +66,7 @@
 
 					{% else %}
 						<li class="nav-item">
+                            <!-- Partie Game pour le joueur -->
 							{% if request.get_full_path == "/game" %}
 							<a class="nav-link active" href="{% url 'game' %}">
 							{% else %}
@@ -56,25 +74,26 @@
 							{% endif %}
 								Vue Jeu
 							</a>
-						</li>						
+						</li>
 					{% endif %}
 
-					
+
 				</ul>
 					<!-- Deconnexion Button trigger modal -->
 					<button class="btn btn-outline-danger" data-toggle="modal" data-target="#logoutmodal" style="width:15%; min-width: 150px; margin-left: 10px;">
 						Déconnexion
-					</button>	
+					</button>
 			</nav>
-			
+
 			<!-- END NAVBAR  -->
 
 			<!--  Main Container  -->
 	        <main role="main">
 
 				{% if messages %}
+                <!-- Affiche les erreurs -->
 					<div class="flex-column">
-						{% for message in messages  %}				
+						{% for message in messages  %}
 							<div class="alert alert-{{ message.tags}}" role="alert">
 								{{message}}
 							</div>
@@ -84,42 +103,45 @@
 			<div class="title" style="padding: 20px;">
 				<h1>Hacker à l'ouvrage</h1>
 			</div>
-					
+
           <div class="row">
 
             <div class="col-8">
 
-				{% if game.status == "PAUSED" %}      			
+				{% if game.status == "PAUSED" %}
+                <!-- La partie est en pause -->
 				<div style="padding: 5%;" >
 					<div class="header">
 						En Pause
 					</div>
 					<div class="body">
 						<p>La partie a été mise en pause par l'Administrateur. Merci de patienter.</p>
-					</div>	
+					</div>
 				</div>
 				{% elif game.status == "WAITING" %}
-  
+                <!-- La partie est en pause -->
 					<div class="card" style="padding: 5%;">
 						<div class="card-header">
 							En Attente
 						</div>
 						<div class="card-body">
 							<p>La partie n'a pas encore été lancée. Merci de patienter.</p>
-						</div>	
+						</div>
 					</div>
-  
+
 				{% elif game.status == "INGAME" %}
+                <!-- La partie est démarée -->
 					<div class="webgl-content">
 						<div id="unityContainer" style="width: 720px; height: 450px; padding-top:30%;"></div>
 						<div class="footer">
 						<div class="webgl-logo"></div>
+                        <!-- Unity : WebGL  -->
 						<div class="fullscreen" onclick="unityInstance.SetFullscreen(1)">
-							<a href="{% static '/webgl/TemplateData/fullscreen.png' %}"></a>		
+							<a href="{% static '/webgl/TemplateData/fullscreen.png' %}"></a>
 						</div>
 						<div class="title">Hacker à l'ouvrage</div>
 						</div>
-					</div>		  
+					</div>
 				{% endif %}
             </div>
             <div class="col-4">
@@ -128,7 +150,7 @@
 
               </div>
 
-              <!-- Timer -->
+              <!-- Minuteur  -->
               <div class="row w-100" style="padding: 5%;">
                 {% if timer %}
                   <div class="card w-100" >
@@ -143,12 +165,12 @@
                     </div>
                   </div>
                 {% endif %}
-              </div>  
+              </div>
 
               <!-- Classement de l'équipe -->
               <div class="row w-100" style="padding: 5%;">
                 <div class="card w-100">
-              
+
                   <div class="card-header">
                     <p class="card-title"> Votre Équipe</p>
                   </div>
@@ -166,15 +188,15 @@
                             <th scope="row" class="team_progression">{{ team_progression }} %</th>
                         </tr>
                       </tbody>
-                    </table>  
+                    </table>
                   </div>
                 </div>
-              </div> 
+              </div>
 
               <!-- Top 3  -->
               <div class="row w-100" style="padding: 5%;">
                 <div class="card w-100">
-              
+
                   <div class="card-header">
                     <p class="card-title"> Top 3</p>
                   </div>
@@ -194,17 +216,17 @@
                               </tr>
                           {% endfor %}
                       </tbody>
-                    </table>  
+                    </table>
                   </div>
                 </div>
-              </div> 
+              </div>
             </div>
           </div>
- 
 
-		
+
+
 			</main>
-			<!-- END Container  -->			
+			<!-- END Container  -->
 	    </div>
 
 	    <!-- logoutmodal -->
@@ -229,21 +251,22 @@
 		  </div>
 		</div>
 
-		<!-- AJAX PROGRESSION FORM -->	
+		<!-- AJAX PROGRESSION FORM -->
 		<form method="POST" action="{% url 'ajax_update_progression' %}" type="hidden" id="progression-form">
 			{% csrf_token %}
 
 			<input type="hidden" name="post_progression" id="post_progression">
 			<input type="hidden" name="post_team_name" id="post_team_name" value="{{ team_name }}">
 			<input type="hidden" value="POST">
-		</form>		
-		
+		</form>
+
 		{% block scripts %} {% endblock %}
-		<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>	
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 		<script type="text/javascript">
 
+        // prepare les cookies pour la requete POST
 		function getCookie(name) {
 			if (document.cookie && document.cookie != '') {
 				var cookies = document.cookie.split(';');
@@ -256,18 +279,18 @@
 				}
 			}
 		}
-		// Function demandant à Unity la progression 
+		// Function demandant à Unity la progression
 		function getFloatFromUnity() {
              unityInstance.SendMessage("WebGLBridge", "GetAvancement");
         }
-		// Function recevant la progression 
+		// Function recevant la progression
 		function receiveMessageFromUnity(number) {
-			post_progression(number); 
+			post_progression(number);
 		}
 
-		// Envoi de la progression au serveur 
+		// Envoi de la progression au serveur
 		function post_progression(progression) {
-			
+
 			var input_progression = document.getElementById('post_progression')
 			input_progression.value = progression;
 
@@ -279,9 +302,9 @@
 				headers:{
 					"X-CSRFToken" : getCookie('csrftoken')
 				},
-				data : { 
+				data : {
 					post_progression: progression,
-					post_team_name: "{{ team_name }}"					
+					post_team_name: "{{ team_name }}"
 				}, // data sent with the post request
 
 				// handle a successful response
@@ -298,25 +321,25 @@
 					console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
 				}
 			});
-			
+
 		};
 
-		// AJAX to get teams data 
+		// AJAX to get teams data
 		function get_teams(){
 			console.log("Will get Team");
 			$.ajax({
-				url : '/ajax/get_teams/', // endpoint 
+				url : '/ajax/get_teams/', // endpoint
 				type : 'GET',
 				dataType : 'json',
 				success: function(response){
-					// classement 
+					// classement
 					var tab_teams_name = document.getElementsByClassName('team_name');
 					var tab_teams_progression = document.getElementsByClassName('team_progression')
-					
+
 					// top 3
 					var tab_top_teams_progression = document.getElementsByClassName('top_team_progression');
 					var tab_top_teams_name = document.getElementsByClassName('top_team_name');
-					
+
 					// set txt for top 3
 					for (var i=0;i < tab_top_teams_name.length;i++)
 					{
@@ -336,11 +359,11 @@
 			});
 		}
 
-			
+
 			function get_game_status(){
-			// AJAX to get the status of the game 
+			// AJAX to get the status of the game
 			$.ajax({
-				url : '/ajax/get_game_status/', // endpoint 
+				url : '/ajax/get_game_status/', // endpoint
 				type : 'GET',
 				dataType : 'json',
 				success: function(response){
@@ -352,16 +375,18 @@
 			});
 		}
 
-
+        //
 		$(document).ready(function(){
-		// AJAX for posting progression 
+		// AJAX for posting progression
+        // une fois que le dom est prêt
+        // récupère la liste d'équipes
 			get_teams();
 			var loop_timer = setInterval(function(){
-
+                // récupère l'heure et fait
 				var sTimer = document.getElementById("sTimer");
 				var current_date = new Date();
 				var created_at = parseFloat('{{ created_at }}') ;
-				var timer = parseFloat('{{ timer }}') ; // get time en seconds 
+				var timer = parseFloat('{{ timer }}') ; // get time en seconds
 
 
 
@@ -374,8 +399,8 @@
 					sTimer.innerHTML = "En attente du lancement.";
 				}
 				if (game_status == "INGAME"){
-						if (timer_display<=0){				
-						window.alert("La partie est terminée.");		
+						if (timer_display<=0){
+						window.alert("La partie est terminée.");
 						sTimer.innerHTML = "La partie est terminée.";
 						clearInterval(loop_timer);
 					}
@@ -384,9 +409,9 @@
 							sTimer.innerHTML = Math.floor(timer_display/60) + ':0' + Math.floor(timer_display%60);
 						}
 						else {
-							sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);	
+							sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);
 						}
-						
+
 					}
 				}
 
@@ -395,17 +420,18 @@
 				}
 			},250);
 
-			// it update teams each 5 seconds
+            // boucle qui met à jour les équipes toutes les 5 secondes
 			var update_teams = setInterval(function(){
 				get_teams();
 			},5000);
 
-			// each 30 secs it ask unity for the progression
+            // boucle qui met à jour la progression toutes les 15 secondes
 			var post_progression = setInterval(function(){
 				getFloatFromUnity();
 			},15000);
 
 
+            // récupere le status de l'équipe
 			var game_status = "{{ game.status}}";
 			if (game_status != "INGAME"){
 				var loop_status = setInterval(function(){
