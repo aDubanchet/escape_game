@@ -9,6 +9,20 @@
 
       <!-- Latest compiled and minified CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+      <style media="screen">
+      /* Téléchargement de la Police de caractère  */
+      @font-face {
+        font-family: "bliss";
+        src:
+             url("{% static '/fonts/Bliss2R.otf' %}");
+      }
+      /* Mise en place de la police dans tout le document  */
+      * {
+          font-family: "bliss", serif;
+      }
+
+
+      </style>
     </head>
 
     <body class="h-100 w-100">
@@ -47,17 +61,17 @@
 							{% endif %}
 								Vue Jeu
 							</a>
-						</li>						
+						</li>
 					{% endif %}
 
-					
+
 				</ul>
 					<!-- Deconnexion Button trigger modal -->
 					<button class="btn btn-outline-danger" data-toggle="modal" data-target="#logoutmodal" style="width:15%; min-width: 150px; margin-left: 10px;">
 						Déconnexion
-					</button>	
+					</button>
 			</nav>
-			
+
 			<!-- END NAVBAR  -->
 
 			<!--  Main Container  -->
@@ -65,7 +79,7 @@
 
 				{% if messages %}
 					<div class="flex-column">
-						{% for message in messages  %}				
+						{% for message in messages  %}
 							<div class="alert alert-{{ message.tags}}" role="alert">
 								{{message}}
 							</div>
@@ -76,7 +90,7 @@
               {% if not game %}
               <a href="{% url 'create_game' %}">Créer une Partie</a>
               {% endif%}
-        
+
               {% if game %}
                 <div class="row w-100" style="padding: 5%;">
                   <div class="teams">
@@ -103,29 +117,29 @@
                                             <th scope="row">{{ team.name }}</th>
                                             <th scope="row">{{ team.progression }} %</th>
                                             <th scope="row" >{{ team.password }}</th>
-                                            <th scope="row" style="padding: 10px;">                  
+                                            <th scope="row" style="padding: 10px;">
                                                 <form action="{% url 'ad_delete_team' team_id=team.id %}" method="POST" class="d-flex justify-content-around">
                                                 {% csrf_token %}
                                                 <button type="submit" type="button"  class="btn btn-danger">Supprimer</button>
                                                 </form>
                                             </th>
-        
+
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                               </table>
-        
+
                               {% else %}
                                 <h2>Aucune équipe a été ajoutée.</h2>
                               {% endif %}
                             </div>
                           </div>
-        
+
                           <div class="card col-4">
                             <div class="card-header">
                               <div class="card-title">Ajouter une équipe</div>
                             </div>
-        
+
                             <div class="card-body">
                                 <!-- ADMIN : Ajouter une équipe -->
                                 <p class="card-text">
@@ -133,7 +147,7 @@
                                 </p>
                               <form action="{% url 'ad_create_team'%}" method="POST">
                                 {% csrf_token %}
-                                
+
                                 <input type="text" name='team_name' placeholder="Nom de l'équipe">
                                 <button type="submit" type="button" class="btn btn-success mx-1"><img class="mr-1" >Ajouter</button>
                               </form>
@@ -157,25 +171,25 @@
 
                         </div>
                   </div>
-      
+
                 </div>
 
-                <div class="row w-100 d-flex justify-content-around">  
+                <div class="row w-100 d-flex justify-content-around">
                     {% if game.status == "PAUSED" %}
-      
+
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#reStartGameModal">
                       Reprendre la Partie
                     </button>
-      
+
                     {% elif game.status == "WAITING" %}
-      
+
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#startGameModal" >
                           Commencer la Partie
-                        </button>                      
+                        </button>
                     {% endif %}
-  
+
                     {% if game.status != "WAITING " %}
                       <!-- Button trigger modal -->
                       <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#stopGameModal" >
@@ -205,8 +219,8 @@
                   </div>
                 </div>
               </div>
-        
-        
+
+
               <!-- Start Game Modal -->
               <div class="modal fade" id="startGameModal" tabindex="-1" role="dialog" aria-labelledby="Démarrer la partie" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -219,12 +233,12 @@
                     </div>
                     <div class="modal-body">
                       <p>Voulez-vous vraiment commencer la Partie ?</p>
-        
+
                     <button class="btn btn-success" type="submit"><a style="text-decoration:none;color: inherit;" href="{% url 'ad_start_game' %}">Commencer la partie</a> </button>
                     </div>
                   </div>
                 </div>
-              </div> 
+              </div>
 
                 <!-- ReStart Game Modal -->
                 <div class="modal fade" id="reStartGameModal" tabindex="-1" role="dialog" aria-labelledby="Reprendre la partie" aria-hidden="true">
@@ -238,15 +252,15 @@
                       </div>
                       <div class="modal-body">
                         <p>Voulez-vous vraiment reprendre la Partie ?</p>
-          
+
                       <button class="btn btn-success" type="submit"><a style="text-decoration:none;color: inherit;" href="{% url 'ad_start_game' %}"> Reprendre la partie</a> </button>
                       </div>
                     </div>
                   </div>
-                </div> 
+                </div>
 
 			</main>
-			<!-- END Container  -->			
+			<!-- END Container  -->
 	    </div>
 
 	    <!-- logoutmodal -->
@@ -270,7 +284,7 @@
 		    </div>
 		  </div>
 		</div>
-		
+
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -280,14 +294,14 @@
 
 
 		$(document).ready(function(){
-		// AJAX for posting progression 
+		// AJAX for posting progression
 
 			var loop_timer = setInterval(function(){
 
 				var sTimer = document.getElementById("sTimer");
 				var current_date = new Date();
 				var created_at = parseFloat('{{ created_at }}') ;
-				var timer = parseFloat('{{ timer }}') ; // get time en seconds 
+				var timer = parseFloat('{{ timer }}') ; // get time en seconds
 
 
 
@@ -300,8 +314,8 @@
 					sTimer.innerHTML = "En attente du lancement.";
 				}
 				if (game_status == "INGAME"){
-						if (timer_display<=0){				
-						window.alert("La partie est terminée.");		
+						if (timer_display<=0){
+						window.alert("La partie est terminée.");
 						sTimer.innerHTML = "La partie est terminée.";
 						clearInterval(loop_timer);
 					}
@@ -310,9 +324,9 @@
 							sTimer.innerHTML = Math.floor(timer_display/60) + ':0' + Math.floor(timer_display%60);
 						}
 						else {
-							sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);	
+							sTimer.innerHTML = Math.floor(timer_display/60) + ':' + Math.floor(timer_display%60);
 						}
-						
+
 					}
 				}
 
